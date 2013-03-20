@@ -4,7 +4,7 @@
  *
  * Using Pi6 Engine Code
  *
- * @version 0.01
+ * @version 0.02
  * @copyright GPL (c) 2007
 **/
 
@@ -26,7 +26,7 @@ int PlayerHeadX = 0;
 int PlayerHeadY = 0;
 
 // Game config
-const char* GameTitle = "AsciiCraft - Indev 0.1 (0.01)";
+const char* GameTitle = "AsciiCraft";
 
 // Game Map
  // Notes:
@@ -195,21 +195,36 @@ void DoRenderStep()
 		ParseKeys();
 	}
 		
-	SetDrawCoord(79, 0);
-	Sleep(50);
+	SetDrawCoord(80, 0);
 }
 
 /* Game boot */
 int main()
 {
+	SetDrawCoord(1, 0);
+	
 	SetConsoleTitle(GameTitle);
+	SetEntityColor(7);
+	 cout << "Indev 2";
 	
 	MapRender();
 	PlayerRender();
 	
+	// Debug
+	POINT pt; //
+
 	while(Key != 113)
 	{
+		// Debug
+		GetCursorPos(&pt);
+		
+		SetDrawCoord(66, 0);
+		 SetEntityColor(7);
+		 cout << "X:" << pt.x << ", Y: " << pt.y; //
+		 
 		DoRenderStep();
+		
+		Sleep(50);
 	}
 	return 0;
 }
