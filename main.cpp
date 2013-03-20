@@ -80,9 +80,9 @@ char map[40][80] = {"                                                           
 					"                                     T                                         ",
 					"                                     T                                         ",
 					"                                     T                                         ",
-					"                 GGGGGGG  GGGGGG  GGGGGGGG                                     ",
-					"                GDDDDDDDGGDDDDDDGGDDDDDDDDG         SS               SS        ",
-					"               GDDDDDDDDDDDDDDDDDDDDDDDDDDDG         S               S         ",
+					"                 GGGGGGG  GGGGGG  GGGGGGGG          S                 S        ",
+					"                GDDDDDDDGGDDDDDDGGDDDDDDDDG        SSWWWWWWWWWWWWWWWWWSS       ",
+					"               GDDDDDDDDDDDDDDDDDDDDDDDDDDDG      S SSWWWWWWWWWWWWWWWSS S      ",
 					"GGGGGGGGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDDGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"};
 
 /* Main engine code */
@@ -304,7 +304,7 @@ void ParseKeys()
 		break;
 		
 		case 119: //W
-			if(map[PlayerHeadY-1][PlayerHeadX] != ' ') break;
+			if(map[PlayerHeadY-1][PlayerHeadX] != ' ' and map[PlayerHeadY-1][PlayerHeadX] != 'W') break;
 			
 			IsJumping = 1;
 
@@ -331,7 +331,7 @@ void ParseKeys()
 		break;
 		
 		case 97: //A
-			if(map[PlayerHeadY][PlayerHeadX-1] != ' ' || map[PlayerHeadY+1][PlayerHeadX-1] != ' ') break;
+			if(map[PlayerHeadY][PlayerHeadX-1] != ' ' and map[PlayerHeadY][PlayerHeadX-1] != 'W'|| map[PlayerHeadY+1][PlayerHeadX-1] != ' ' and map[PlayerHeadY+1][PlayerHeadX-1] != 'W') break;
 			
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
@@ -343,7 +343,7 @@ void ParseKeys()
 		break;
 		
 		case 100: //D
-			if(map[PlayerHeadY][PlayerHeadX+1] != ' ' || map[PlayerHeadY+1][PlayerHeadX+1] != ' ') break;
+			if(map[PlayerHeadY][PlayerHeadX+1] != ' ' and map[PlayerHeadY][PlayerHeadX+1] != 'W' || map[PlayerHeadY+1][PlayerHeadX+1] != ' ' and map[PlayerHeadY+1][PlayerHeadX+1] != 'W') break;
 			
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
@@ -364,7 +364,7 @@ void DoRenderStep()
 	
 	if(IsJumping == 0)
 	{
-		if(map[PlayerHeadY+2][PlayerHeadX] == ' ')
+		if(map[PlayerHeadY+2][PlayerHeadX] == ' ' || map[PlayerHeadY+2][PlayerHeadX] == 'W')
 		{
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
