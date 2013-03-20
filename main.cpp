@@ -105,8 +105,6 @@ void SetEntityColor(int cO)
 }
 
 int IsJumping = 0;
-int WalkingLeft = 0;
-int WalkingRight = 0;
 int i;
 
 void ParseKeys()
