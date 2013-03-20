@@ -1,6 +1,8 @@
 /***
- * Pi6 Engine
+ * AsciiCraft
  * ASCII-based open-source platform game engine
+ *
+ * Using Py6 Engine Code
  *
  * @version 0.01
  * @copyright GPL (c) 2007
