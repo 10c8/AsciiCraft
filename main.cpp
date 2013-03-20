@@ -4,7 +4,7 @@
  *
  * Using Pi6 Engine Code
  *
- * @version 0.03
+ * @version 0.04
  * @copyright GPL (c) 2007
 **/
 
@@ -210,8 +210,6 @@ void ParseKeys()
 
 void DoRenderStep()
 {
-	//system("COLOR 30");
-	
 	MapRender();
 	PlayerRender();
 	CursorRender();
@@ -243,11 +241,13 @@ void DoRenderStep()
 /* Game boot */
 int main()
 {
-	SetDrawCoord(1, 0);
+	system("MODE CON: COLS=80 LINES=40");
 	
 	SetConsoleTitle(GameTitle);
-	SetEntityColor(7);
-	 cout << "Indev 3";
+	
+	SetDrawCoord(1, 0);
+	 SetEntityColor(7);
+	 cout << "Indev 3a";
 
 	while(Key != 113)
 	{
