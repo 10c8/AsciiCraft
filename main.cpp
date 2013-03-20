@@ -4,7 +4,7 @@
  *
  * Using Pi6 Engine Code
  *
- * @version 0.02
+ * @version 0.03
  * @copyright GPL (c) 2007
 **/
 
@@ -40,18 +40,18 @@ char map[18][59] = {"                                                          "
 					"                                                          ",
 					"                                                          ",
 					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                 #######  ######  ########                ",
-					"                #       ##      ##        #               ",
-					"               #                           #              ",
-					"##########################################################"};
+					"                                   LLLLL                  ",
+					"                                 LLLLLLLLL                ",
+					"                                LLLLLLLLLLL               ",
+					"                                  LLLLLLL                 ",
+					"                                     T                    ",
+					"                                     T                    ",
+					"                                     T                    ",
+					"                                     T                    ",
+					"                 GGGGGGG  GGGGGG  GGGGGGGG                ",
+					"                GDDDDDDDGGDDDDDDGGDDDDDDDDG               ",
+					"               GDDDDDDDDDDDDDDDDDDDDDDDDDDDG              ",
+					"GGGGGGGGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDDGGGGGGGGGGGGGG"};
 
 /* Main engine code */
 void MapRender();
@@ -72,9 +72,34 @@ void MapRender()
 		{
 			switch(map[i][j])
 			{
-				case '#':
+				case 'S': //Stone
 					SetDrawCoord(j,i);
-                     cout << (char)219;
+					 SetEntityColor(7);
+					 cout <<(char)219;
+				break;
+				
+				case 'D': //Dirt
+					SetDrawCoord(j,i);
+					 SetEntityColor(6);
+					 cout <<(char)219;
+				break;
+				
+				case 'G': //Grass
+					SetDrawCoord(j,i);
+					 SetEntityColor(98);
+                     cout << (char)223;
+				break;
+				
+				case 'L': //Leaves
+					SetDrawCoord(j,i);
+					 SetEntityColor(162);
+					 cout << (char)178;
+				break;
+				
+				case 'T': //Trunk
+					SetDrawCoord(j,i);
+					 SetEntityColor(134);
+					 cout << (char)178;
 				break;
 			}
 		}
@@ -84,12 +109,12 @@ void MapRender()
 void PlayerRender()
 {
 	SetDrawCoord(PlayerHeadX, PlayerHeadY);
-	 SetEntityColor(6);
-	 cout << (char)001;
+	 SetEntityColor(104);
+	 cout << (char)191;
 	
 	SetDrawCoord(PlayerHeadX, PlayerHeadY+1);
-	 SetEntityColor(11);
-	 cout << (char)219;
+	 SetEntityColor(186);
+	 cout << (char)223;
 	
 	SetEntityColor(0); 
 }
@@ -116,26 +141,28 @@ void SetEntityColor(int cO)
 }
 
 int IsJumping = 0;
-int i;
+int JumpStep = 0;
 
 void ParseKeys()
 {
 	switch(Key)
 	{
 		case 101: // E
-			// Not implemented yer
+			// Not implemented yet
 		break;
 		
 		case 119: // W
-			if(map[PlayerHeadY-1][PlayerHeadX] == '#') break;
+			if(map[PlayerHeadY-1][PlayerHeadX] != ' ') break;
 			
 			IsJumping = 1;
-			
-			for(i=0;i<=2;i++)
+
+			while(IsJumping)
 			{
-				if(i == 2)
+				if(JumpStep == 2)
 				{
 					IsJumping = 0;
+					JumpStep = 0;
+					break;
 				}
 				
 				SetDrawCoord(PlayerHeadX, PlayerHeadY);
@@ -144,15 +171,17 @@ void ParseKeys()
 				 cout << " ";
 			 
 				PlayerHeadY--;
-			 
+					
 				PlayerRender();
-				
+
+				JumpStep++;
 				Sleep(50);
+
 			}
 		break;
 		
 		case 97: // A
-			if(map[PlayerHeadY][PlayerHeadX-1] == '#' || map[PlayerHeadY+1][PlayerHeadX-1] == '#') break;
+			if(map[PlayerHeadY][PlayerHeadX-1] != ' ' || map[PlayerHeadY+1][PlayerHeadX-1] != ' ') break;
 			
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
@@ -165,7 +194,7 @@ void ParseKeys()
 		break;
 		
 		case 100: // D
-			if(map[PlayerHeadY][PlayerHeadX+1] == '#' || map[PlayerHeadY+1][PlayerHeadX+1] == '#') break;
+			if(map[PlayerHeadY][PlayerHeadX+1] != ' ' || map[PlayerHeadY+1][PlayerHeadX+1] != ' ') break;
 			
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
@@ -181,6 +210,10 @@ void ParseKeys()
 
 void DoRenderStep()
 {
+	//system("COLOR 30");
+	
+	MapRender();
+	PlayerRender();
 	CursorRender();
 	
 	if(IsJumping == 0)
@@ -214,23 +247,10 @@ int main()
 	
 	SetConsoleTitle(GameTitle);
 	SetEntityColor(7);
-	 cout << "Indev 2";
-	
-	MapRender();
-	PlayerRender();
-	
-	// Debug
-	POINT pt; //
+	 cout << "Indev 3";
 
 	while(Key != 113)
 	{
-		// Debug
-		GetCursorPos(&pt);
-		
-		SetDrawCoord(66, 0);
-		 SetEntityColor(7);
-		 cout << "X:" << pt.x << ", Y: " << pt.y; //
-		 
 		DoRenderStep();
 		
 		Sleep(50);
