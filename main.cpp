@@ -23,7 +23,7 @@ using namespace std;
 int Key;
 
 int PlayerHeadX = 0;
-int PlayerHeadY = 0;
+int PlayerHeadY = 37;
 
 int CursorX = 10;
 int CursorY = 10;
@@ -35,23 +35,46 @@ const char* GameTitle = "AsciiCraft";
  // Notes:
  // No map generation, yet.
  // No side-scrolling camera system yet, so, basically a map with the screen size.
-char map[18][59] = {"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                                          ",
-					"                                   LLLLL                  ",
-					"                                 LLLLLLLLL                ",
-					"                                LLLLLLLLLLL               ",
-					"                                  LLLLLLL                 ",
-					"                                     T                    ",
-					"                                     T                    ",
-					"                                     T                    ",
-					"                                     T                    ",
-					"                 GGGGGGG  GGGGGG  GGGGGGGG                ",
-					"                GDDDDDDDGGDDDDDDGGDDDDDDDDG               ",
-					"               GDDDDDDDDDDDDDDDDDDDDDDDDDDDG              ",
-					"GGGGGGGGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDDGGGGGGGGGGGGGG"};
+char map[40][80] = {"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                   LLLLL                                       ",
+					"                                 LLLLLLLLL                                     ",
+					"                                LLLLLLLLLLL                                    ",
+					"                                  LLLLLLL                                      ",
+					"                                     T                                         ",
+					"                                     T                                         ",
+					"                                     T                                         ",
+					"                                     T                                         ",
+					"                 GGGGGGG  GGGGGG  GGGGGGGG                                     ",
+					"                GDDDDDDDGGDDDDDDGGDDDDDDDDG                                    ",
+					"               GDDDDDDDDDDDDDDDDDDDDDDDDDDDG                                   ",
+					"GGGGGGGGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDDGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"};
 
 /* Main engine code */
 void MapRender();
@@ -66,9 +89,9 @@ void MapRender()
 {
 	SetDrawCoord(0, 0);
 	
-	for(int i = 0; i < 18; i++)
+	for(int i = 0; i < 40; i++)
 	{
-		for(int j = 0; j < 58; j++)
+		for(int j = 0; j < 80; j++)
 		{
 			switch(map[i][j])
 			{
@@ -211,7 +234,7 @@ void DoRenderStep()
 {
 	MapRender();
 	PlayerRender();
-	CursorRender();
+	//CursorRender();
 	
 	if(IsJumping == 0)
 	{
