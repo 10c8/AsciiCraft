@@ -2,14 +2,15 @@
  * AsciiCraft
  * ASCII-based open-source platform game engine
  *
- * Using Py6 Engine Code
+ * Using Pi6 Engine Code
  *
  * @version 0.01
  * @copyright GPL (c) 2007
 **/
 
 // Notes:
-// Currently working on movement and falling-entity physics (only for player)
+// Work on movement physics pretty much done!
+// Now started working on mouse tracking, camera movement and water physics.
 
 #include <iostream>
 using namespace std;
@@ -23,8 +24,6 @@ int Key;
 
 int PlayerHeadX = 0;
 int PlayerHeadY = 0;
-//int PlayerBodyX = PlayerHeadX;
-//int PlayerBodyY = PlayerHeadY - 1;
 
 // Game config
 const char* GameTitle = "AsciiCraft - Indev 0.1 (0.01)";
@@ -55,7 +54,6 @@ char map[18][59] = {"                                                          "
 void MapRender();
 void PlayerRender();
 void SetDrawCoord(int cX, int cY);
-//void DrawEntity(int enT);
 void SetEntityColor(int cO);
 void ParseMovement();
 void DoRenderStep();
@@ -101,15 +99,6 @@ void SetDrawCoord(int cX, int cY)
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), DrawPos);
 }
 
-/*void DrawEntity(const char enT)
-{
-	// Notes:
-	// lN stands for "Lines", ex: "DrawEntity("@#", 2);" will draw "@" in first line, then do "Y-1" and draw # in the second line.
-	// Still implementing.
-	
-	cout << enT;
-}*/
-
 void SetEntityColor(int cO)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), cO);
@@ -124,12 +113,10 @@ void ParseKeys()
 {
 	switch(Key)
 	{
-		/* Commands */
 		case 101: // E
 			// Not implemented yer
 		break;
 		
-		/* Movement and actions */
 		case 119: // W
 			if(map[PlayerHeadY-1][PlayerHeadX] == '#') break;
 			
@@ -189,7 +176,6 @@ void ParseKeys()
 
 void DoRenderStep()
 {
-	// Player "gravity"
 	if(IsJumping == 0)
 	{
 		if(map[PlayerHeadY+2][PlayerHeadX] == ' ')
