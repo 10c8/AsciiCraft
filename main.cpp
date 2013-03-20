@@ -25,6 +25,9 @@ int Key;
 int PlayerHeadX = 0;
 int PlayerHeadY = 0;
 
+int CursorX = 10;
+int CursorY = 10;
+
 // Game config
 const char* GameTitle = "AsciiCraft";
 
@@ -53,6 +56,7 @@ char map[18][59] = {"                                                          "
 /* Main engine code */
 void MapRender();
 void PlayerRender();
+void CursorRender();
 void SetDrawCoord(int cX, int cY);
 void SetEntityColor(int cO);
 void ParseMovement();
@@ -88,6 +92,13 @@ void PlayerRender()
 	 cout << (char)219;
 	
 	SetEntityColor(0); 
+}
+
+void CursorRender()
+{
+	SetDrawCoord(CursorX, CursorY);
+	 SetEntityColor(7);
+	 cout << (char)006;
 }
 
 void SetDrawCoord(int cX, int cY)
@@ -174,6 +185,8 @@ void ParseKeys()
 
 void DoRenderStep()
 {
+	CursorRender();
+	
 	if(IsJumping == 0)
 	{
 		if(map[PlayerHeadY+2][PlayerHeadX] == ' ')
