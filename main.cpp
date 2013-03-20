@@ -176,7 +176,6 @@ void ParseKeys()
 
 				JumpStep++;
 				Sleep(50);
-
 			}
 		break;
 		
@@ -252,8 +251,6 @@ int main()
 	while(Key != 113)
 	{
 		DoRenderStep();
-		
-		Sleep(50);
 	}
 	return 0;
 }
