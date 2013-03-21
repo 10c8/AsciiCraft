@@ -4,7 +4,7 @@
  *
  * Using Pi6 Engine Code
  *
- * @version 0.06
+ * @version 0.07
  * @copyright GPL (c) 2007
 **/
 
@@ -13,6 +13,9 @@
 // Block placing pretty done!
 // Block breaking pretty done!
 // Working to make the resources finite. :D
+// Water physics pretty much done! Just need to make it finite too.
+// Falling block physics done!
+// Redstone work started!
 
 #include <iostream>
 using namespace std;
@@ -72,18 +75,18 @@ char map[40][80] = {"                                                           
 					"                                                                               ",
 					"                                                                               ",
 					"                                                                               ",
-					"                                   LLLLL                                       ",
-					"                                 LLLLLLLLL                                     ",
-					"                                LLLLLLLLLLL                                    ",
-					"                                  LLLLLLL                                      ",
-					"                                     T                                         ",
-					"                                     T                                         ",
-					"                                     T                                         ",
-					"                                     T                                         ",
-					"                 GGGGGGG  GGGGGG  GGGGGGGG          S                 S        ",
-					"                GDDDDDDDGGDDDDDDGGDDDDDDDDG        SSWWWWWWWWWWWWWWWWWSS       ",
-					"               GDDDDDDDDDDDDDDDDDDDDDDDDDDDG      S SSWWWWWWWWWWWWWWWSS S      ",
-					"GGGGGGGGGGGGGGGDDDDDDDDDDDDDDDDDDDDDDDDDDDDDGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"};
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"                                                                               ",
+					"GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"};
 
 /* Main engine code */
 void MapRender();
@@ -91,6 +94,7 @@ void PlayerRender();
 void CursorRender();
 void SetDrawCoord(int cX, int cY);
 void SetEntityColor(int cO);
+void FallingBlockPhysics(int x, int y, int b);
 void LiquidPhysics(int x, int y);
 void ParseMovement();
 void DoRenderStep();
@@ -135,6 +139,24 @@ void MapRender()
 					 cout << (char)178;
 				break;
 				
+				case 'g': //Gravel
+					SetDrawCoord(j,i);
+					 SetEntityColor(135);
+					 cout << (char)178;
+					SetEntityColor(0);
+					 
+					FallingBlockPhysics(j, i, 1);
+				break;
+				
+				case 's': //Sand
+					SetDrawCoord(j,i);
+					 SetEntityColor(110);
+					 cout << (char)178;
+					SetEntityColor(0);
+					 
+					FallingBlockPhysics(j, i, 2);
+				break;
+				
 				case 'W': //Water
 					LiquidPhysics(j, i);
 				break;
@@ -153,7 +175,7 @@ void PlayerRender()
 	 SetEntityColor(186);
 	 cout << (char)223;
 	
-	SetEntityColor(0); 
+	SetEntityColor(0);
 }
 
 void CursorRender()
@@ -175,6 +197,22 @@ void SetDrawCoord(int cX, int cY)
 void SetEntityColor(int cO)
 {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), cO);
+}
+
+void FallingBlockPhysics(int x, int y, int b)
+{
+	if(map[y+1][x] == ' ' || map[y+1][x] == 'W')
+	{
+		SetDrawCoord(x,y);
+		 cout << " ";
+		
+		map[y][x] = ' ';
+		
+		y++;
+		
+		if(b == 1) map[y][x] = 'g';
+		if(b == 2) map[y][x] = 's';
+	}
 }
 
 void LiquidPhysics(int x, int y)
@@ -205,11 +243,38 @@ void LiquidPhysics(int x, int y)
 	}
 };
 
+// Test Redstone
+void updateRedstone(int x, int y);
+void useButton(int x, int y);
+void useRepeater(int x, int y);
+
+void updateRedstone(int x, int y)
+{
+	if(map[y][x] == '.')
+	{
+		if(map[y-1][x] == ',') map[y][x] == ','; //Up
+		if(map[y+1][x] == ',') map[y][x] == ','; //Down
+		if(map[y][x-1] == ',') map[y][x] == ','; //Left
+		if(map[y][x+1] == ',') map[y][x] == ','; //Right
+	}
+}
+
+void useButton(int x, int y){};
+void useRepeater(int x, int y){};
+//
+
 void ParseKeys()
 {
 	switch(Key)
 	{
 		case 105: //I - Inventory
+		break;
+		
+		case 116: //T - Interact
+			if(map[CursorY][CursorX] == '<') map[CursorY][CursorX] == '>'; //Lever Off
+			if(map[CursorY][CursorX] == '>') map[CursorY][CursorX] == '<'; //Lever On
+			if(map[CursorY][CursorX] == '*') //useButton(); //Button
+			if(map[CursorY][CursorX] == ':') //useRepeater(); //Repeater
 		break;
 		
 		case 49: //1 - Stone
@@ -232,8 +297,16 @@ void ParseKeys()
 			SelectedBlock = 4;
 		break;
 		
-		case 54: //6 - Water
+		case 54: //6 - Gravel
 			SelectedBlock = 5;
+		break;
+		
+		case 55: //7 - Sand
+			SelectedBlock = 6;
+		break;
+		
+		case 56: //8 - Water
+			SelectedBlock = 7;
 		break;
 		
 		case 101: //E - Build
@@ -261,7 +334,15 @@ void ParseKeys()
 					map[CursorY][CursorX] = 'L';
 				break;
 				
-				case 5: //Water
+				case 5: //Gravel
+					map[CursorY][CursorX] = 'g';
+				break;
+				
+				case 6: //Sand
+					map[CursorY][CursorX] = 's';
+				break;
+				
+				case 7: //Water
 					map[CursorY][CursorX] = 'W';
 				break;
 			}
@@ -394,7 +475,7 @@ int main()
 	
 	SetDrawCoord(1, 0);
 	 SetEntityColor(7);
-	 cout << "Indev 4a";
+	 cout << "Indev 4b";
 
 	while(Key != 27)
 	{
