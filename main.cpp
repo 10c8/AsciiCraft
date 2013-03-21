@@ -391,12 +391,8 @@ void ParseKeys()
 
 			while(IsJumping)
 			{
-				if(JumpStep == 2)
-				{
-					IsJumping = 0;
-					JumpStep = 0;
-					break;
-				}
+				if(map[PlayerHeadY-1][PlayerHeadX] != ' ' and map[PlayerHeadY-1][PlayerHeadX] != 'W'){ IsJumping = 0; JumpStep = 0; break; }
+				if(JumpStep == 2){ IsJumping = 0; JumpStep = 0; break; }
 				
 				SetDrawCoord(PlayerHeadX, PlayerHeadY);
 				 cout << " ";
@@ -443,6 +439,10 @@ void DoRenderStep()
 	PlayerRender();
 	CursorRender();
 	
+	SetDrawCoord(1, 1);
+	 SetEntityColor(15);
+	 cout << "AsciiCraft - Indev 4b";
+	
 	if(IsJumping == 0)
 	{
 		if(map[PlayerHeadY+2][PlayerHeadX] == ' ' || map[PlayerHeadY+2][PlayerHeadX] == 'W')
@@ -472,10 +472,6 @@ int main()
 	system("MODE CON: COLS=80 LINES=40");
 	
 	SetConsoleTitle(GameTitle);
-	
-	SetDrawCoord(1, 0);
-	 SetEntityColor(7);
-	 cout << "Indev 4b";
 
 	while(Key != 27)
 	{
