@@ -27,7 +27,7 @@ using namespace std;
 // System variables
 int Key;
 
-int PlayerHeadX = 0;
+int PlayerHeadX = 1;
 int PlayerHeadY = 37;
 
 int IsJumping = 0;
@@ -35,7 +35,7 @@ int JumpStep = 0;
 
 int SelectedBlock = 0;
 
-int CursorX = 4;
+int CursorX = 5;
 int CursorY = 37;
 const int WindowX = 80;
 const int WindowY = 40;
@@ -181,7 +181,7 @@ void PlayerRender()
 void CursorRender()
 {
 	SetDrawCoord(CursorX, CursorY);
-	 SetEntityColor(7);
+	 SetEntityColor(15);
 	 cout << (char)006;
 }
 
@@ -219,8 +219,6 @@ void LiquidPhysics(int x, int y)
 {
 	if(map[y][x] == 'W')
 	{
-		map[y][x] == ' ';
-		
 		//Bottom = Block
 		if(map[y][x+1] == ' ' and map[y][x-1] != ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') map[y][x+1] = 'W'; // Left=Block, Right=None, Bottom=Block
 		if(map[y][x+1] != ' ' and map[y][x-1] == ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') map[y][x-1] = 'W'; // Right=Block, Left=None, Bottom=Block
@@ -243,7 +241,7 @@ void LiquidPhysics(int x, int y)
 	}
 };
 
-// Test Redstone
+/* Test Redstone
 void updateRedstone(int x, int y);
 void useButton(int x, int y);
 void useRepeater(int x, int y);
@@ -261,7 +259,7 @@ void updateRedstone(int x, int y)
 
 void useButton(int x, int y){};
 void useRepeater(int x, int y){};
-//
+*/
 
 void ParseKeys()
 {
@@ -270,12 +268,12 @@ void ParseKeys()
 		case 105: //I - Inventory
 		break;
 		
-		case 116: //T - Interact
+		/*case 116: //T - Interact
 			if(map[CursorY][CursorX] == '<') map[CursorY][CursorX] == '>'; //Lever Off
 			if(map[CursorY][CursorX] == '>') map[CursorY][CursorX] == '<'; //Lever On
 			if(map[CursorY][CursorX] == '*') //useButton(); //Button
 			if(map[CursorY][CursorX] == ':') //useRepeater(); //Repeater
-		break;
+		break;*/
 		
 		case 49: //1 - Stone
 			SelectedBlock = 0;
@@ -353,6 +351,8 @@ void ParseKeys()
 		break;
 		
 		case 72: //Arrow Up
+			if(CursorY == 0) break;
+			
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
 			 
@@ -361,6 +361,8 @@ void ParseKeys()
 		break;
 		
 		case 80: //Arrow Down
+			if(CursorY == 39) break;
+			
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
 			 
@@ -369,6 +371,8 @@ void ParseKeys()
 		break;
 		
 		case 75: //Arrow Left
+			if(CursorX == 0) break;
+			
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
 			 
@@ -377,6 +381,8 @@ void ParseKeys()
 		break;
 		
 		case 77: //Arrow Right
+			if(CursorX == 79) break;
+			
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
 			 
