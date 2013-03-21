@@ -44,10 +44,16 @@ const int WindowY = 40;
 const char* GameTitle = "AsciiCraft - Don't kill the pigs! (nah, kill them)";
 
 // GUI
+int curInvSlot = 0;
 char invSlots[4][37] = {"*--!*--!*--!*--!*--!*--!*--!*--!*--!",
-						",11,,22,,33,,44,,55,,66,,77,,88,,  ,",
-						",22,,22,,33,,44,,55,,66,,77,,88,,  ,",
+						",33,,22,,11,,44,,55,,66,,77,,88,,  ,",
+						",33,,22,,22,,44,,55,,66,,77,,88,,  ,",
 						".--@.--@.--@.--@.--@.--@.--@.--@.--@"};
+
+char selSlot[4][5] = {"QWWE",
+					  "R  R",
+					  "R  R",
+					  "TWWY"};
 
 // Game Map
  // Notes:
@@ -102,7 +108,8 @@ void SetDrawCoord(int cX, int cY);
 void SetEntityColor(int cO);
 void FallingBlockPhysics(int x, int y, int b);
 void LiquidPhysics(int x, int y);
-void ParseMovement();
+void selInvSlot(int num);
+void ParseKeys();
 void DoRenderStep();
 
 void GUIRender()
@@ -365,6 +372,72 @@ void useButton(int x, int y){};
 void useRepeater(int x, int y){};
 */
 
+int coord = 0;
+void selInvSlot(int num)
+{
+	SelectedBlock = num;
+	
+	switch(num)
+	{
+		case 0:
+			coord = 33;
+		break;
+		
+		case 1:
+			coord = 37;
+		break;
+		
+		case 2:
+			coord = 41;
+		break;
+	}
+	
+	for(int i = 0; i < 4; i++)
+	{
+		for(int j = 0; j < 4; j++)
+		{
+			switch(selSlot[j][i])
+			{
+				case '1':
+					SetDrawCoord(j + coord,i);
+					 SetEntityColor(8);
+	  				 cout << (char)192;
+				break;
+				
+				case '2':
+					SetDrawCoord(j + coord,i);
+					 SetEntityColor(8);
+					 cout << (char)196;
+				break;
+				
+				case '3':
+					SetDrawCoord(j + coord,i);
+					 SetEntityColor(8);
+					 cout << (char)179;
+				break;
+				
+				case '4':
+					SetDrawCoord(j + coord,i);
+					 SetEntityColor(8);
+					 cout << (char)217;
+				break;
+				
+				case '5':
+					SetDrawCoord(j + coord,i);
+					 SetEntityColor(8);
+					 cout << (char)218;
+				break;
+				
+				case '6':
+					SetDrawCoord(j + coord,i);
+					 SetEntityColor(8);
+					 cout << (char)191;
+				break;
+			}
+		}
+	}
+}
+
 void ParseKeys()
 {
 	switch(Key)
@@ -380,35 +453,35 @@ void ParseKeys()
 		break;*/
 		
 		case 49: //1 - Stone
-			SelectedBlock = 0;
+			selInvSlot(0);
 		break;
 		
 		case 50: //2 - Dirt
-			SelectedBlock = 1;
+			selInvSlot(1);
 		break;
 		
 		case 51: //3 - Grass
-			SelectedBlock = 2;
+			selInvSlot(2);
 		break;
 		
 		case 52: //4 - Trunk
-			SelectedBlock = 3;
+			selInvSlot(3);
 		break;
 		
 		case 53: //5 - Leaves
-			SelectedBlock = 4;
+			selInvSlot(4);
 		break;
 		
 		case 54: //6 - Gravel
-			SelectedBlock = 5;
+			selInvSlot(5);
 		break;
 		
 		case 55: //7 - Sand
-			SelectedBlock = 6;
+			selInvSlot(6);
 		break;
 		
 		case 56: //8 - Water
-			SelectedBlock = 7;
+			selInvSlot(7);
 		break;
 		
 		case 101: //E - Build
