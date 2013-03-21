@@ -43,6 +43,12 @@ const int WindowY = 40;
 // Game config
 const char* GameTitle = "AsciiCraft - Don't kill the pigs! (nah, kill them)";
 
+// GUI
+char invSlots[4][37] = {"*--!*--!*--!*--!*--!*--!*--!*--!*--!",
+						",11,,22,,33,,44,,55,,66,,77,,88,,  ,",
+						",22,,22,,33,,44,,55,,66,,77,,88,,  ,",
+						".--@.--@.--@.--@.--@.--@.--@.--@.--@"};
+
 // Game Map
  // Notes:
  // No map generation, yet.
@@ -98,6 +104,104 @@ void FallingBlockPhysics(int x, int y, int b);
 void LiquidPhysics(int x, int y);
 void ParseMovement();
 void DoRenderStep();
+
+void GUIRender()
+{
+	SetDrawCoord(0, 0);
+	
+	for(int i = 0; i < 4; i++)
+	{
+		for(int j = 0; j < 36; j++)
+		{
+			switch(invSlots[i][j])
+			{
+				case '.':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(15);
+					 cout << (char)192;
+				break;
+				
+				case '-':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(15);
+					 cout << (char)196;
+				break;
+				
+				case ',':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(15);
+					 cout << (char)179;
+				break;
+				
+				case '@':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(15);
+					 cout << (char)217;
+				break;
+				
+				case '*':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(15);
+					 cout << (char)218;
+				break;
+				
+				case '!':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(15);
+					 cout << (char)191;
+				break;
+				
+				case '1':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(98);
+                     cout << (char)219;
+				break;
+				
+				case '2':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(6);
+                     cout << (char)219;
+				break;
+				
+				case '3':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(7);
+                     cout << (char)219;
+				break;
+				
+				case '4':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(134);
+                     cout << (char)178;
+				break;
+				
+				case '5':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(162);
+                     cout << (char)178;
+				break;
+				
+				case '6':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(135);
+                     cout << (char)178;
+				break;
+				
+				case '7':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(110);
+                     cout << (char)178;
+				break;
+				
+				case '8':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(59);
+                     cout << (char)178;
+				break;
+			}
+		}
+	}
+}
 
 void MapRender()
 {
@@ -444,6 +548,7 @@ void DoRenderStep()
 	MapRender();
 	PlayerRender();
 	CursorRender();
+	GUIRender();
 	
 	SetDrawCoord(1, 1);
 	 SetEntityColor(15);
@@ -476,8 +581,6 @@ void DoRenderStep()
 int main()
 {
 	system("MODE CON: COLS=80 LINES=40");
-	
-	SetConsoleTitle(GameTitle);
 
 	while(Key != 27)
 	{
