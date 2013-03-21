@@ -654,6 +654,9 @@ void DoRenderStep()
 int main()
 {
 	system("MODE CON: COLS=80 LINES=40");
+	SetConsoleTitle(GameTitle);
+	
+	PlaySound("menu_bg.wav", NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
 
 	while(Key != 27)
 	{
