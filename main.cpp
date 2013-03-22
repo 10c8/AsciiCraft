@@ -448,7 +448,7 @@ void ParseKeys()
 		break;
 		
 		case 77:
-			if(CursorX == 79) break;
+			if(CursorX == 78) break;
 			
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
