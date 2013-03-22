@@ -2,7 +2,7 @@
  * AsciiCraft
  * ASCII-based open-source platform game engine
  *
- * @version 0.10
+ * @version 0.11
  * @copyright GPL (c) 2007
 **/
 
