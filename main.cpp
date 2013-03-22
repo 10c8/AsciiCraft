@@ -1,6 +1,6 @@
 /***
  * AsciiCraft
- * ASCII-based open-source platform minecraft-like game
+ * ASCII-based minecraft-like game
  *
  * @version 0.11
  * @copyright GPL (c) 2007
