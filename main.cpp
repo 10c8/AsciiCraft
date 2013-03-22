@@ -2,20 +2,9 @@
  * AsciiCraft
  * ASCII-based open-source platform game engine
  *
- * Using Pi6 Engine Code
- *
- * @version 0.07
+ * @version 0.10
  * @copyright GPL (c) 2007
 **/
-
-// Notes:
-// Work on movement physics pretty done!
-// Block placing pretty done!
-// Block breaking pretty done!
-// Working to make the resources finite. :D
-// Water physics pretty much done! Just need to make it finite too.
-// Falling block physics done!
-// Redstone work started!
 
 #include <iostream>
 using namespace std;
@@ -46,8 +35,8 @@ const char* GameTitle = "AsciiCraft - Don't kill the pigs! (nah, kill them)";
 // GUI
 int curInvSlot = 0;
 char invSlots[4][37] = {"*--!*--!*--!*--!*--!*--!*--!*--!*--!",
-						",33,,22,,11,,44,,55,,66,,77,,88,,  ,",
-						",33,,22,,22,,44,,55,,66,,77,,88,,  ,",
+						",33,,22,,11,,44,,55,,66,,77,,88,,99,",
+						",33,,22,,22,,44,,55,,66,,77,,88,,99,",
 						".--@.--@.--@.--@.--@.--@.--@.--@.--@"};
 
 char selSlot[4][5] = {"QWWE",
@@ -59,7 +48,7 @@ char selSlot[4][5] = {"QWWE",
  // Notes:
  // No map generation, yet.
  // No side-scrolling camera system yet, so, basically a map with the screen size.
-char map[40][80] = {"                                                                               ",
+char map[40][81] = {"                                                                               ",
 					"                                                                               ",
 					"                                                                               ",
 					"                                                                               ",
@@ -205,6 +194,12 @@ void GUIRender()
 					 SetEntityColor(59);
                      cout << (char)178;
 				break;
+				
+				case '9':
+					SetDrawCoord(j + 33,i);
+					 SetEntityColor(6);
+                     cout << (char)197;
+				break;
 			}
 		}
 	}
@@ -220,37 +215,58 @@ void MapRender()
 		{
 			switch(map[i][j])
 			{
-				case 'S': //Stone
+				case 'F':
+					if(map[i-1][j] == ' ' || map[i-1][j] != 'W' and map[i-1][j] != 'F' and map[i-1][j] != 'g' and map[i-1][j] != 's')
+					{
+						map[i-1][j] = 'f';
+					}
+					
+					SetDrawCoord(j,i);
+					 SetEntityColor(6);
+					 cout << "#";
+				break;
+				
+				case 'f':
+					if(map[i+1][j] != 'F')
+					{
+						SetDrawCoord(j,i);
+						 SetEntityColor(0);
+						 cout << ' ';
+						map[i][j] = ' ';
+					}
+				break;	
+				
+				case 'S':
 					SetDrawCoord(j,i);
 					 SetEntityColor(7);
 					 cout << (char)219;
 				break;
 				
-				case 'D': //Dirt
+				case 'D':
 					SetDrawCoord(j,i);
 					 SetEntityColor(6);
 					 cout << (char)219;
 				break;
 				
-				case 'G': //Grass
+				case 'G':
 					SetDrawCoord(j,i);
 					 SetEntityColor(98);
                      cout << (char)223;
 				break;
 				
-				case 'T': //Trunk
+				case 'T':
 					SetDrawCoord(j,i);
 					 SetEntityColor(134);
 					 cout << (char)178;
 				break;
 				
-				case 'L': //Leaves
+				case 'L':
 					SetDrawCoord(j,i);
 					 SetEntityColor(162);
 					 cout << (char)178;
 				break;
 				
-				case 'g': //Gravel
+				case 'g':
 					SetDrawCoord(j,i);
 					 SetEntityColor(135);
 					 cout << (char)178;
@@ -259,7 +275,7 @@ void MapRender()
 					FallingBlockPhysics(j, i, 1);
 				break;
 				
-				case 's': //Sand
+				case 's':
 					SetDrawCoord(j,i);
 					 SetEntityColor(110);
 					 cout << (char)178;
@@ -268,7 +284,11 @@ void MapRender()
 					FallingBlockPhysics(j, i, 2);
 				break;
 				
-				case 'W': //Water
+				case 'W':
+					SetDrawCoord(j,i);
+					 SetEntityColor(59);
+					 cout << (char)178;
+					 
 					LiquidPhysics(j, i);
 				break;
 			}
@@ -312,13 +332,13 @@ void SetEntityColor(int cO)
 
 void FallingBlockPhysics(int x, int y, int b)
 {
-	if(map[y+1][x] == ' ' || map[y+1][x] == 'W')
+	if(map[y+1][x] == ' ' || map[y+1][x] == 'W' || map[y+1][x] == 'f')
 	{
 		SetDrawCoord(x,y);
 		 cout << " ";
-		
+
 		map[y][x] = ' ';
-		
+	
 		y++;
 		
 		if(b == 1) map[y][x] = 'g';
@@ -328,114 +348,27 @@ void FallingBlockPhysics(int x, int y, int b)
 
 void LiquidPhysics(int x, int y)
 {
-	if(map[y][x] == 'W')
+	if(map[y+1][x] == 'W' and map[y-1][x] != 'W')
 	{
-		//Bottom = Block
-		if(map[y][x+1] == ' ' and map[y][x-1] != ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') map[y][x+1] = 'W'; // Left=Block, Right=None, Bottom=Block
-		if(map[y][x+1] != ' ' and map[y][x-1] == ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') map[y][x-1] = 'W'; // Right=Block, Left=None, Bottom=Block
-		if(map[y][x+1] != ' ' and map[y][x-1] != ' ' and map[y+1][x] != ' ' and map[y][x+1] != 'W' and map[y][x-1] != 'W') map[y][x] = 'W'; // Right and Left=Block, Bottom=Block
-		if(map[y][x+1] == ' ' and map[y][x-1] == ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') // Right and Left=None, Bottom=Block
-		{
-			map[y][x+1] = 'W';
-			map[y][x-1] = 'W';
-		}
-		
-		// Bottom = None
-		if(map[y][x+1] == ' ' and map[y][x-1] != ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W'; // Left=Block, Right=None, Bottom=None
-		if(map[y][x+1] != ' ' and map[y][x-1] == ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W'; // Right=Block, Left=None, Bottom=None
-		if(map[y][x+1] != ' ' and map[y][x-1] != ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W'; // Right and Left=Block, Bottom=None
-		if(map[y][x+1] == ' ' and map[y][x-1] == ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W'; // Right and Left=None, Bottom=None
-		
 		SetDrawCoord(x,y);
-		 SetEntityColor(59);
-		 cout << (char)178;
+		 SetEntityColor(0);
+		 cout << " ";
+		map[y][x] = ' ';
 	}
+	else if(map[y][x+1] == ' ' and map[y][x-1] != ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') map[y][x+1] = 'W';
+	else if(map[y][x+1] != ' ' and map[y][x-1] == ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W') map[y][x-1] = 'W';
+	else if(map[y][x+1] != ' ' and map[y][x-1] != ' ' and map[y+1][x] != ' ' and map[y][x+1] != 'W' and map[y][x-1] != 'W') map[y][x] = 'W';
+	else if(map[y][x+1] == ' ' and map[y][x-1] == ' ' and map[y+1][x] != ' ' and map[y+1][x] != 'W'){ map[y][x+1] = 'W'; map[y][x-1] = 'W'; }
+	else if(map[y][x+1] == ' ' and map[y][x-1] != ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W';
+	else if(map[y][x+1] != ' ' and map[y][x-1] == ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W';
+	else if(map[y][x+1] != ' ' and map[y][x-1] != ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W';
+	else if(map[y][x+1] == ' ' and map[y][x-1] == ' ' and map[y+1][x] == ' ') map[y+1][x] = 'W';
 };
 
-/* Test Redstone
-void updateRedstone(int x, int y);
-void useButton(int x, int y);
-void useRepeater(int x, int y);
-
-void updateRedstone(int x, int y)
-{
-	if(map[y][x] == '.')
-	{
-		if(map[y-1][x] == ',') map[y][x] == ','; //Up
-		if(map[y+1][x] == ',') map[y][x] == ','; //Down
-		if(map[y][x-1] == ',') map[y][x] == ','; //Left
-		if(map[y][x+1] == ',') map[y][x] == ','; //Right
-	}
-}
-
-void useButton(int x, int y){};
-void useRepeater(int x, int y){};
-*/
-
-int coord = 0;
 void selInvSlot(int num)
 {
 	SelectedBlock = num;
 	
-	switch(num)
-	{
-		case 0:
-			coord = 33;
-		break;
-		
-		case 1:
-			coord = 37;
-		break;
-		
-		case 2:
-			coord = 41;
-		break;
-	}
-	
-	for(int i = 0; i < 4; i++)
-	{
-		for(int j = 0; j < 4; j++)
-		{
-			switch(selSlot[j][i])
-			{
-				case '1':
-					SetDrawCoord(j + coord,i);
-					 SetEntityColor(8);
-	  				 cout << (char)192;
-				break;
-				
-				case '2':
-					SetDrawCoord(j + coord,i);
-					 SetEntityColor(8);
-					 cout << (char)196;
-				break;
-				
-				case '3':
-					SetDrawCoord(j + coord,i);
-					 SetEntityColor(8);
-					 cout << (char)179;
-				break;
-				
-				case '4':
-					SetDrawCoord(j + coord,i);
-					 SetEntityColor(8);
-					 cout << (char)217;
-				break;
-				
-				case '5':
-					SetDrawCoord(j + coord,i);
-					 SetEntityColor(8);
-					 cout << (char)218;
-				break;
-				
-				case '6':
-					SetDrawCoord(j + coord,i);
-					 SetEntityColor(8);
-					 cout << (char)191;
-				break;
-			}
-		}
-	}
 }
 
 void ParseKeys()
@@ -445,89 +378,46 @@ void ParseKeys()
 		case 105: //I - Inventory
 		break;
 		
-		/*case 116: //T - Interact
-			if(map[CursorY][CursorX] == '<') map[CursorY][CursorX] == '>'; //Lever Off
-			if(map[CursorY][CursorX] == '>') map[CursorY][CursorX] == '<'; //Lever On
-			if(map[CursorY][CursorX] == '*') //useButton(); //Button
-			if(map[CursorY][CursorX] == ':') //useRepeater(); //Repeater
-		break;*/
-		
-		case 49: //1 - Stone
-			selInvSlot(0);
+		case 116: //T - Interact
 		break;
 		
-		case 50: //2 - Dirt
-			selInvSlot(1);
-		break;
+		case 49: selInvSlot(0); break;
+		case 50: selInvSlot(1); break;
+		case 51: selInvSlot(2); break;
+		case 52: selInvSlot(3); break;
+		case 53: selInvSlot(4); break;
+		case 54: selInvSlot(5); break;
+		case 55: selInvSlot(6); break;
+		case 56: selInvSlot(7); break;
+		case 57: selInvSlot(8); break;
 		
-		case 51: //3 - Grass
-			selInvSlot(2);
-		break;
-		
-		case 52: //4 - Trunk
-			selInvSlot(3);
-		break;
-		
-		case 53: //5 - Leaves
-			selInvSlot(4);
-		break;
-		
-		case 54: //6 - Gravel
-			selInvSlot(5);
-		break;
-		
-		case 55: //7 - Sand
-			selInvSlot(6);
-		break;
-		
-		case 56: //8 - Water
-			selInvSlot(7);
-		break;
-		
-		case 101: //E - Build
+		case 101:
 			if(map[CursorY][CursorX] != ' ' and map[CursorY][CursorX] != 'W') break;
+			
+			if(CursorX == PlayerHeadX and CursorY == PlayerHeadY) break;
+			if(CursorX == PlayerHeadX and CursorY == PlayerHeadY + 1) break;
 			
 			switch(SelectedBlock)
 			{
-				case 0: //Stone
-					map[CursorY][CursorX] = 'S';
-				break;
-				
-				case 1: //Dirt
-					map[CursorY][CursorX] = 'D';
-				break;
-				
-				case 2: //Grass
-					map[CursorY][CursorX] = 'G';
-				break;
-				
-				case 3: //Trunk
-					map[CursorY][CursorX] = 'T';
-				break;
-				
-				case 4: //Leaves
-					map[CursorY][CursorX] = 'L';
-				break;
-				
-				case 5: //Gravel
-					map[CursorY][CursorX] = 'g';
-				break;
-				
-				case 6: //Sand
-					map[CursorY][CursorX] = 's';
-				break;
-				
-				case 7: //Water
-					map[CursorY][CursorX] = 'W';
-				break;
+				case 0: map[CursorY][CursorX] = 'S'; break;
+				case 1: map[CursorY][CursorX] = 'D'; break;
+				case 2: map[CursorY][CursorX] = 'G'; break;
+				case 3: map[CursorY][CursorX] = 'T'; break;
+				case 4: map[CursorY][CursorX] = 'L'; break;
+				case 5: map[CursorY][CursorX] = 'g'; break;
+				case 6: map[CursorY][CursorX] = 's'; break;
+				case 7: map[CursorY][CursorX] = 'W'; break;
+				case 8: map[CursorY][CursorX] = 'F'; break;
 			}
 		break;
 		
-		case 113: //Q - Remove
+		case 113:
+			if(map[CursorY][CursorX] == 'f') break;
+			
 			map[CursorY][CursorX] = ' ';
 		break;
 		
-		case 72: //Arrow Up
+		case 72:
 			if(CursorY == 0) break;
 			
 			SetDrawCoord(CursorX, CursorY);
@@ -537,7 +427,7 @@ void ParseKeys()
 			CursorRender();
 		break;
 		
-		case 80: //Arrow Down
+		case 80:
 			if(CursorY == 39) break;
 			
 			SetDrawCoord(CursorX, CursorY);
@@ -547,7 +437,7 @@ void ParseKeys()
 			CursorRender();
 		break;
 		
-		case 75: //Arrow Left
+		case 75:
 			if(CursorX == 0) break;
 			
 			SetDrawCoord(CursorX, CursorY);
@@ -557,7 +447,7 @@ void ParseKeys()
 			CursorRender();
 		break;
 		
-		case 77: //Arrow Right
+		case 77:
 			if(CursorX == 79) break;
 			
 			SetDrawCoord(CursorX, CursorY);
@@ -567,7 +457,7 @@ void ParseKeys()
 			CursorRender();
 		break;
 		
-		case 119: //W
+		case 119:
 			if(map[PlayerHeadY-1][PlayerHeadX] != ' ' and map[PlayerHeadY-1][PlayerHeadX] != 'W') break;
 			
 			IsJumping = 1;
@@ -590,7 +480,7 @@ void ParseKeys()
 			}
 		break;
 		
-		case 97: //A
+		case 97:
 			if(map[PlayerHeadY][PlayerHeadX-1] != ' ' and map[PlayerHeadY][PlayerHeadX-1] != 'W'|| map[PlayerHeadY+1][PlayerHeadX-1] != ' ' and map[PlayerHeadY+1][PlayerHeadX-1] != 'W') break;
 			
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
@@ -602,7 +492,7 @@ void ParseKeys()
 			PlayerRender();
 		break;
 		
-		case 100: //D
+		case 100:
 			if(map[PlayerHeadY][PlayerHeadX+1] != ' ' and map[PlayerHeadY][PlayerHeadX+1] != 'W' || map[PlayerHeadY+1][PlayerHeadX+1] != ' ' and map[PlayerHeadY+1][PlayerHeadX+1] != 'W') break;
 			
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
@@ -625,11 +515,11 @@ void DoRenderStep()
 	
 	SetDrawCoord(1, 1);
 	 SetEntityColor(15);
-	 cout << "AsciiCraft - Indev 4b";
+	 cout << "AsciiCraft - Indev 4e";
 	
 	if(IsJumping == 0)
 	{
-		if(map[PlayerHeadY+2][PlayerHeadX] == ' ' || map[PlayerHeadY+2][PlayerHeadX] == 'W')
+		if(map[PlayerHeadY+2][PlayerHeadX] == ' ' || map[PlayerHeadY+2][PlayerHeadX] == 'W' || map[PlayerHeadY+2][PlayerHeadX] == 'f')
 		{
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
@@ -640,12 +530,6 @@ void DoRenderStep()
 			PlayerRender();
 		}
 	} //
-	
-	if(kbhit())
-	{
-		Key = getch();
-		ParseKeys();
-	}
 		
 	SetDrawCoord(80, 0);
 }
@@ -656,10 +540,16 @@ int main()
 	system("MODE CON: COLS=80 LINES=40");
 	SetConsoleTitle(GameTitle);
 	
-	PlaySound("menu_bg.wav", NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
+	//PlaySound("menu_bg.wav", NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
 
 	while(Key != 27)
 	{
+		if(kbhit())
+		{
+			Key = getch();
+			ParseKeys();
+		}
+		
 		DoRenderStep();
 	}
 	return 0;
