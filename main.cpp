@@ -10,6 +10,7 @@
 using namespace std;
 
 #include <windows.h>
+#include <process.h>
 #include <conio.h>
 #include <stdlib.h>
 
