@@ -10,9 +10,13 @@
 using namespace std;
 
 #include <windows.h>
+#include <winsock.h>
 #include <process.h>
 #include <conio.h>
 #include <stdlib.h>
+
+// Networking
+int MultiplayerGame,MultiplayerGame_Mode = 0;
 
 // System variables
 int Key;
@@ -105,7 +109,7 @@ void DoRenderStep();
 void GUIRender()
 {
 	SetDrawCoord(0, 0);
-	
+
 	for(int i = 0; i < 4; i++)
 	{
 		for(int j = 0; j < 36; j++)
@@ -117,85 +121,85 @@ void GUIRender()
 					 SetEntityColor(15);
 					 cout << (char)192;
 				break;
-				
+
 				case '-':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(15);
 					 cout << (char)196;
 				break;
-				
+
 				case ',':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(15);
 					 cout << (char)179;
 				break;
-				
+
 				case '@':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(15);
 					 cout << (char)217;
 				break;
-				
+
 				case '*':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(15);
 					 cout << (char)218;
 				break;
-				
+
 				case '!':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(15);
 					 cout << (char)191;
 				break;
-				
+
 				case '1':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(98);
                      cout << (char)219;
 				break;
-				
+
 				case '2':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(6);
                      cout << (char)219;
 				break;
-				
+
 				case '3':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(7);
                      cout << (char)219;
 				break;
-				
+
 				case '4':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(134);
                      cout << (char)178;
 				break;
-				
+
 				case '5':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(162);
                      cout << (char)178;
 				break;
-				
+
 				case '6':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(135);
                      cout << (char)178;
 				break;
-				
+
 				case '7':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(110);
                      cout << (char)178;
 				break;
-				
+
 				case '8':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(59);
                      cout << (char)178;
 				break;
-				
+
 				case '9':
 					SetDrawCoord(j + 33,i);
 					 SetEntityColor(6);
@@ -209,7 +213,7 @@ void GUIRender()
 void MapRender()
 {
 	SetDrawCoord(0, 0);
-	
+
 	for(int i = 0; i < 40; i++)
 	{
 		for(int j = 0; j < 80; j++)
@@ -221,12 +225,12 @@ void MapRender()
 					{
 						map[i-1][j] = 'f';
 					}
-					
+
 					SetDrawCoord(j,i);
 					 SetEntityColor(6);
 					 cout << "#";
 				break;
-				
+
 				case 'f':
 					if(map[i+1][j] != 'F')
 					{
@@ -236,60 +240,60 @@ void MapRender()
 						map[i][j] = ' ';
 					}
 				break;	
-				
+
 				case 'S':
 					SetDrawCoord(j,i);
 					 SetEntityColor(7);
 					 cout << (char)219;
 				break;
-				
+
 				case 'D':
 					SetDrawCoord(j,i);
 					 SetEntityColor(6);
 					 cout << (char)219;
 				break;
-				
+
 				case 'G':
 					SetDrawCoord(j,i);
 					 SetEntityColor(98);
                      cout << (char)223;
 				break;
-				
+
 				case 'T':
 					SetDrawCoord(j,i);
 					 SetEntityColor(134);
 					 cout << (char)178;
 				break;
-				
+
 				case 'L':
 					SetDrawCoord(j,i);
 					 SetEntityColor(162);
 					 cout << (char)178;
 				break;
-				
+
 				case 'g':
 					SetDrawCoord(j,i);
 					 SetEntityColor(135);
 					 cout << (char)178;
 					SetEntityColor(0);
-					 
+
 					FallingBlockPhysics(j, i, 1);
 				break;
-				
+
 				case 's':
 					SetDrawCoord(j,i);
 					 SetEntityColor(110);
 					 cout << (char)178;
 					SetEntityColor(0);
-					 
+
 					FallingBlockPhysics(j, i, 2);
 				break;
-				
+
 				case 'W':
 					SetDrawCoord(j,i);
 					 SetEntityColor(59);
 					 cout << (char)178;
-					 
+
 					LiquidPhysics(j, i);
 				break;
 			}
@@ -302,11 +306,11 @@ void PlayerRender()
 	SetDrawCoord(PlayerHeadX, PlayerHeadY);
 	 SetEntityColor(104);
 	 cout << (char)191;
-	
+
 	SetDrawCoord(PlayerHeadX, PlayerHeadY+1);
 	 SetEntityColor(186);
 	 cout << (char)223;
-	
+
 	SetEntityColor(0);
 }
 
@@ -322,7 +326,7 @@ void SetDrawCoord(int cX, int cY)
 	COORD DrawPos;
 	DrawPos.X = cX;
 	DrawPos.Y = cY;
-	
+
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), DrawPos);
 }
 
@@ -339,9 +343,9 @@ void FallingBlockPhysics(int x, int y, int b)
 		 cout << " ";
 
 		map[y][x] = ' ';
-	
+
 		y++;
-		
+
 		if(b == 1) map[y][x] = 'g';
 		if(b == 2) map[y][x] = 's';
 	}
@@ -369,7 +373,7 @@ void LiquidPhysics(int x, int y)
 void selInvSlot(int num)
 {
 	SelectedBlock = num;
-	
+
 }
 
 void ParseKeys()
@@ -378,10 +382,10 @@ void ParseKeys()
 	{
 		case 105: //I - Inventory
 		break;
-		
+
 		case 116: //T - Interact
 		break;
-		
+
 		case 49: selInvSlot(0); break;
 		case 50: selInvSlot(1); break;
 		case 51: selInvSlot(2); break;
@@ -391,13 +395,13 @@ void ParseKeys()
 		case 55: selInvSlot(6); break;
 		case 56: selInvSlot(7); break;
 		case 57: selInvSlot(8); break;
-		
+
 		case 101:
 			if(map[CursorY][CursorX] != ' ' and map[CursorY][CursorX] != 'W') break;
-			
+
 			if(CursorX == PlayerHeadX and CursorY == PlayerHeadY) break;
 			if(CursorX == PlayerHeadX and CursorY == PlayerHeadY + 1) break;
-			
+
 			switch(SelectedBlock)
 			{
 				case 0: map[CursorY][CursorX] = 'S'; break;
@@ -411,68 +415,68 @@ void ParseKeys()
 				case 8: map[CursorY][CursorX] = 'F'; break;
 			}
 		break;
-		
+
 		case 113:
 			if(map[CursorY][CursorX] == 'f') break;
-			
+
 			map[CursorY][CursorX] = ' ';
 		break;
-		
+
 		case 72:
 			if(CursorY == 0) break;
-			
+
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
-			 
+
 			CursorY--;
 			CursorRender();
 		break;
-		
+
 		case 80:
 			if(CursorY == 39) break;
-			
+
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
-			 
+
 			CursorY++;
 			CursorRender();
 		break;
-		
+
 		case 75:
 			if(CursorX == 0) break;
-			
+
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
-			 
+
 			CursorX--;
 			CursorRender();
 		break;
-		
+
 		case 77:
 			if(CursorX == 78) break;
-			
+
 			SetDrawCoord(CursorX, CursorY);
 			 cout << " ";
-			 
+
 			CursorX++;
 			CursorRender();
 		break;
-		
+
 		case 119:
 			if(map[PlayerHeadY-1][PlayerHeadX] != ' ' and map[PlayerHeadY-1][PlayerHeadX] != 'W') break;
-			
+
 			IsJumping = 1;
 
 			while(IsJumping)
 			{
 				if(map[PlayerHeadY-1][PlayerHeadX] != ' ' and map[PlayerHeadY-1][PlayerHeadX] != 'W'){ IsJumping = 0; JumpStep = 0; break; }
 				if(JumpStep == 2){ IsJumping = 0; JumpStep = 0; break; }
-				
+
 				SetDrawCoord(PlayerHeadX, PlayerHeadY);
 				 cout << " ";
 				SetDrawCoord(PlayerHeadX, PlayerHeadY+1);
 				 cout << " ";
-			 
+
 				PlayerHeadY--;
 				PlayerRender();
 
@@ -480,27 +484,27 @@ void ParseKeys()
 				Sleep(100);
 			}
 		break;
-		
+
 		case 97:
 			if(map[PlayerHeadY][PlayerHeadX-1] != ' ' and map[PlayerHeadY][PlayerHeadX-1] != 'W'|| map[PlayerHeadY+1][PlayerHeadX-1] != ' ' and map[PlayerHeadY+1][PlayerHeadX-1] != 'W') break;
-			
+
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
 			SetDrawCoord(PlayerHeadX, PlayerHeadY+1);
 			 cout << " ";
-			 
+
 			PlayerHeadX--;
 			PlayerRender();
 		break;
-		
+
 		case 100:
 			if(map[PlayerHeadY][PlayerHeadX+1] != ' ' and map[PlayerHeadY][PlayerHeadX+1] != 'W' || map[PlayerHeadY+1][PlayerHeadX+1] != ' ' and map[PlayerHeadY+1][PlayerHeadX+1] != 'W') break;
-			
+
 			SetDrawCoord(PlayerHeadX, PlayerHeadY);
 			 cout << " ";
 			SetDrawCoord(PlayerHeadX, PlayerHeadY+1);
 			 cout << " ";
-			 
+
 			PlayerHeadX++;
 			PlayerRender();
 		break;
@@ -513,11 +517,11 @@ void DoRenderStep()
 	PlayerRender();
 	CursorRender();
 	GUIRender();
-	
+
 	SetDrawCoord(1, 1);
 	 SetEntityColor(15);
 	 cout << "AsciiCraft - Indev 4e";
-	
+
 	if(IsJumping == 0)
 	{
 		if(map[PlayerHeadY+2][PlayerHeadX] == ' ' || map[PlayerHeadY+2][PlayerHeadX] == 'W' || map[PlayerHeadY+2][PlayerHeadX] == 'f')
@@ -531,7 +535,7 @@ void DoRenderStep()
 			PlayerRender();
 		}
 	} //
-		
+
 	SetDrawCoord(80, 0);
 }
 
@@ -540,8 +544,22 @@ int main()
 {
 	system("MODE CON: COLS=80 LINES=40");
 	SetConsoleTitle(GameTitle);
-	
+
 	//PlaySound("menu_bg.wav", NULL, SND_FILENAME|SND_LOOP|SND_ASYNC);
+	
+	// Networking start
+	if(MultiplayerGame == 1)
+	{
+		switch(MultiplayerGame_Mode)
+		{
+			case 0: //Server
+				break;
+				
+			case 1: //Client
+				break;
+		}
+	}
+	// Networking end
 
 	while(Key != 27)
 	{
@@ -550,8 +568,9 @@ int main()
 			Key = getch();
 			ParseKeys();
 		}
-		
+
 		DoRenderStep();
 	}
+	
 	return 0;
 }
